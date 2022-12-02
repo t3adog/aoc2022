@@ -10,9 +10,9 @@ public class Day02 {
             "Y", 0,
             "Z", 1);
 
-    private Shape findMyShape(Step he, String status) {
+    private Shape findMyShape(Step he, String myBest) {
         for (Shape value : Shape.values()) {
-            if (new Step(value).compareTo(he) == STEP_MAP.get(status)) {
+            if (new Step(value).compareTo(he) == STEP_MAP.get(myBest)) {
                 return value;
             }
         }
