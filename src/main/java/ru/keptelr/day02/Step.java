@@ -10,16 +10,19 @@ public class Step implements Comparable<Step> {
     public Step(String shape) {
         if (shape.equals("A") || shape.equals("X")) {
             this.shape = Shape.rock;
-            this.score = 1;
         }
         if (shape.equals("B") || shape.equals("Y")) {
             this.shape = Shape.paper;
-            this.score = 2;
         }
         if (shape.equals("C") || shape.equals("Z")) {
-            this.shape = Shape.scissors;            
-            this.score = 3;
+            this.shape = Shape.scissors;
         }
+        this.score = calcScores(this.getShape());
+    }
+
+    public Step(Shape shape) {
+        this.shape = shape;
+        this.score = calcScores(this.shape);
     }
 
     @Override
@@ -28,12 +31,12 @@ public class Step implements Comparable<Step> {
             return 0;
         }
         if (this.getShape() == Shape.rock) {
-          if (step.getShape() == Shape.scissors) {
-            return 1;
-          }
-          if (step.getShape() == Shape.paper) {
-            return -1;
-          }
+            if (step.getShape() == Shape.scissors) {
+                return 1;
+            }
+            if (step.getShape() == Shape.paper) {
+                return -1;
+            }
         }
         if (this.getShape() == Shape.scissors) {
             if (step.getShape() == Shape.rock) {
@@ -54,5 +57,13 @@ public class Step implements Comparable<Step> {
         throw new RuntimeException("whats wrong with you?");
     }
 
+    private int calcScores(Shape shape) {
+        switch(shape) {
+            case rock: return 1;
+            case paper: return 2;
+            case scissors: return 3;
+        }
+        throw new RuntimeException("whats wrong with you?");
+    }
 
 }

@@ -15,9 +15,6 @@ public class DayExecutor {
         System.out.println("Day02 Part01: " + day02.partOne(InputParserUtil.readFile("day02")));
         System.out.println("Day02 Part02: " + day02.partTwo(InputParserUtil.readFile("day02")));
 
-
-        // Не 16028
-
     }
     
 }
