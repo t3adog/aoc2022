@@ -3,7 +3,7 @@ package ru.keptelr.day02;
 import lombok.Data;
 
 @Data
-public class Step implements Comparable<Step> {
+public class Step implements Comparable<Step> { // This code with smell. I think it's overloaded abstraction. We can use all business logic in Shape class. Buuuut.... we have what we have :3
     private Shape shape;
     private Integer score;
 
