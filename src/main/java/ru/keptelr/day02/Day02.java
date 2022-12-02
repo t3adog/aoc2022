@@ -16,7 +16,7 @@ public class Day02 {
                 return value;
             }
         }
-        throw new RuntimeException("what's wrong with you?");
+        throw new RuntimeException("what's wrong with you?"); //whats wrong with me?
     }
 
     public int partOne(List<String> input) {

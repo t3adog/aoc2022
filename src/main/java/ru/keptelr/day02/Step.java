@@ -54,7 +54,7 @@ public class Step implements Comparable<Step> {
                 return -1;
             }
         }
-        throw new RuntimeException("whats wrong with you?");
+        throw new RuntimeException("whats wrong with you?"); //whats wrong with me?
     }
 
     private int calcScores(Shape shape) {
@@ -63,7 +63,7 @@ public class Step implements Comparable<Step> {
             case paper: return 2;
             case scissors: return 3;
         }
-        throw new RuntimeException("whats wrong with you?");
+        throw new RuntimeException("whats wrong with you?"); //whats wrong with me?
     }
 
 }

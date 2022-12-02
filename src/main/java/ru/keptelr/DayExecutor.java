@@ -16,5 +16,5 @@ public class DayExecutor {
         System.out.println("Day02 Part02: " + day02.partTwo(InputParserUtil.readFile("day02")));
 
     }
-    
+
 }
