@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import ru.keptelr.utils.InputParserUtil;
 
+
 public class Day03Test {
     @Test
     public void testPartOne() {
@@ -19,6 +20,6 @@ public class Day03Test {
     public void testPartTwo() {
         List<String> input = InputParserUtil.readFile("day03");
         Day03 day03 = new Day03();
-        Assert.assertEquals(0, day03.partTwo(input));
+        Assert.assertEquals(70, day03.partTwo(input));
     }
 }
