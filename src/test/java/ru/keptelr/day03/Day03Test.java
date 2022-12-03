@@ -12,7 +12,7 @@ public class Day03Test {
     public void testPartOne() {
         List<String> input = InputParserUtil.readFile("day03");
         Day03 day03 = new Day03();
-        Assert.assertEquals(0, day03.partOne(input));
+        Assert.assertEquals(157, day03.partOne(input));
     }
 
     @Test
