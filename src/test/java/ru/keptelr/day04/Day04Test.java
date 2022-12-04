@@ -12,7 +12,8 @@ public class Day04Test {
     public void testPartOne() {
         List<String> input = InputParserUtil.readFile("day04");
         Day04 day04 = new Day04();
-        Assert.assertEquals(0, day04.partOne(input));
+        Assert.assertEquals(2, day04.partOne(input));
+
     }
 
     @Test
