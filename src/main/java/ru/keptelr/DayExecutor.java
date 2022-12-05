@@ -4,6 +4,7 @@ import ru.keptelr.day01.Day01;
 import ru.keptelr.day02.Day02;
 import ru.keptelr.day03.Day03;
 import ru.keptelr.day04.Day04;
+import ru.keptelr.day05.Day05;
 import ru.keptelr.utils.InputParserUtil;
 
 public class DayExecutor {
@@ -24,6 +25,10 @@ public class DayExecutor {
         Day04 day04 = new Day04();
         System.out.println("Day04 Part01: " + day04.partOne(InputParserUtil.readFile("day04")));
         System.out.println("Day04 Part02: " + day04.partTwo(InputParserUtil.readFile("day04")));
+
+        Day05 day05 = new Day05();
+        System.out.println("Day05 Part01: " + day05.partOne(InputParserUtil.readFile("day05")));
+        System.out.println("Day05 Part02: " + day05.partTwo(InputParserUtil.readFile("day05")));
     }
 
 }
