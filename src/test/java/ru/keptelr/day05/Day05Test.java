@@ -12,7 +12,7 @@ public class Day05Test {
     public void testPartOne() {
         List<String> input = InputParserUtil.readFile("day05");
         Day05 day05 = new Day05();
-        Assert.assertEquals(0, day05.partOne(input));
+        Assert.assertEquals("CMZ", day05.partOne(input));
 
     }
 
@@ -20,6 +20,6 @@ public class Day05Test {
     public void testPartTwo() {
         List<String> input = InputParserUtil.readFile("day05");
         Day05 day05 = new Day05();
-        Assert.assertEquals(0, day05.partTwo(input));
+        Assert.assertEquals("MCD", day05.partTwo(input));
     }
 }
