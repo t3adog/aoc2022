@@ -21,6 +21,10 @@ public class Day06Test {
     @Test
     public void testPartTwo() {
         Day06 day06 = new Day06();
-        // Assert.assertEquals(0, day06.partTwo(InputParserUtil.readFile("day06")));
+        Assert.assertEquals(19, day06.partTwo(List.of("mjqjpqmgbljsphdztnvjfqwrcgsmlb")));
+        Assert.assertEquals(23, day06.partTwo(List.of("bvwbjplbgvbhsrlpgdmjqwftvncz")));
+        Assert.assertEquals(23, day06.partTwo(List.of("nppdvjthqldpwncqszvftbrmjlhg")));
+        Assert.assertEquals(29, day06.partTwo(List.of("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")));
+        Assert.assertEquals(26, day06.partTwo(List.of("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")));
     }
 }
