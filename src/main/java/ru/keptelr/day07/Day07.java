@@ -3,7 +3,6 @@ package ru.keptelr.day07;
 import org.apache.commons.lang3.Range;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Day07 {
 
@@ -78,11 +77,26 @@ public class Day07 {
                 dirs.add(element);
             }
         }
-        return dirs.stream().filter(fr -> fr.getSize() < 100000).mapToInt(FileSystemElement::getSize).sum();
+        return dirs.stream().filter(dir -> dir.getSize() < 100000).mapToInt(FileSystemElement::getSize).sum();
     }
 
     public int partTwo(List<String> input) {
-        return 0;
+        FileSystemElement root = parseFileSystem(input);
+
+        int totalDiskSpace = 70000000;
+        int updateSize = 30000000;
+        int freeSpace = totalDiskSpace - root.getSize();
+        int needForUpdate = updateSize - freeSpace;
+
+        Iterator<FileSystemElement> iterator = root.createIterator();
+        List<FileSystemElement> dirs = new ArrayList<>();
+        while (iterator.hasNext()) {
+            FileSystemElement element = iterator.next();
+            if (element.getType() == FsType.dir) {
+                dirs.add(element);
+            }
+        }
+        return dirs.stream().filter(dir -> dir.getSize() >= needForUpdate).mapToInt(FileSystemElement::getSize).min().orElse(0);
     }
 
 }

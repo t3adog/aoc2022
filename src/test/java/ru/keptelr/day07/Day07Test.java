@@ -14,6 +14,6 @@ public class Day07Test {
     @Test
     public void testPartTwo() {
         Day07 day07 = new Day07();
-        Assert.assertEquals(0, day07.partTwo(InputParserUtil.readFile("day07")));
+        Assert.assertEquals(24933642, day07.partTwo(InputParserUtil.readFile("day07")));
     }
 }
