@@ -4,13 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import ru.keptelr.utils.InputParserUtil;
 
-import java.util.List;
-
 public class Day07Test {
     @Test
     public void testPartOne() {
         Day07 day07 = new Day07();
-        Assert.assertEquals(0, day07.partOne(InputParserUtil.readFile("day07")));
+        Assert.assertEquals(95437, day07.partOne(InputParserUtil.readFile("day07")), 0);
     }
 
     @Test
