@@ -8,7 +8,7 @@ public class Day08Test extends TestCase {
 
     public void testPartOne() {
         Day08 day08 = new Day08();
-        Assert.assertEquals(0, day08.partOne(InputParserUtil.readFile("day08")), 0);
+        Assert.assertEquals(21, day08.partOne(InputParserUtil.readFile("day08")), 0);
     }
 
     public void testPartTwo() {
