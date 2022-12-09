@@ -1,10 +1,7 @@
 package ru.keptelr.day09;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Day09 {
@@ -12,57 +9,74 @@ public class Day09 {
     public Integer partOne(List<String> input) {
         List<Instruction> instructions = parseInstructions(input);
 
-        Rope head = new RopeImpl(Pair.of(0, 0));
-        Rope tail = new RopeImpl(Pair.of(0, 0));
+        Rope head = new Rope(new Point(0, 0));
+        Rope tail = new Rope(new Point(0, 0));
         for (Instruction instruction : instructions) {
             for (int i = 0; i < instruction.getStepCount(); i++) {
-                Pair<Integer, Integer> headCurrentPosition = head.getCurrentPosition();
-                switch (instruction.getDirection()) {
-                    case up: {
-                        head.move(Pair.of(headCurrentPosition.getLeft(), headCurrentPosition.getRight() - 1));
-                        break;
-                    }
-                    case down: {
-                        head.move(Pair.of(headCurrentPosition.getLeft(), headCurrentPosition.getRight() + 1));
-                        break;
-                    }
-                    case left: {
-                        head.move(Pair.of(headCurrentPosition.getLeft() - 1, headCurrentPosition.getRight()));
-                        break;
-                    }
-                    case right: {
-                        head.move(Pair.of(headCurrentPosition.getLeft() + 1, headCurrentPosition.getRight()));
-                        break;
-                    }
+                head.handleInstruction(instruction.getDirection(), 1);
+                if (tail.isNeighbor(head)) {
+                    continue;
                 }
-                tail.move(calcTailPosition(head, tail));
+                tail.move(head.getPrevPosition());
             }
         }
-        tail.getPositionsHistory().add(tail.getCurrentPosition());
-        Set<Pair<Integer, Integer>> tailUniqPosition = new HashSet<>(tail.getPositionsHistory());
-        return tailUniqPosition.size();
+        return tail.getUniqPositionCount();
     }
 
+
     public int partTwo(List<String> input) {
-        return 0;
+        List<Instruction> instructions = parseInstructions(input);
+
+        List<Rope> ropes = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            ropes.add(new Rope(new Point(0, 0)));
+        }
+
+        for (Instruction instruction : instructions) {
+            for (int i = 0; i < instruction.getStepCount(); i++) {
+                Rope head = ropes.get(0);
+
+                head.handleInstruction(instruction.getDirection(), 1);
+
+                for (int z = 1; z < ropes.size(); z++) {
+                    Rope tail = ropes.get(z);
+                    Rope preHead = ropes.get(z - 1);
+
+                    Point tailPosition = tail.getCurrentPosition();
+                    Point prevHeadPosition = preHead.getCurrentPosition();
+
+                    List<Point> possiblePoints = new ArrayList<>();
+                    if (tail.isNeighbor(preHead)) {
+                        continue;
+                    }
+
+                    if (prevHeadPosition.getX() != tailPosition.getX() && prevHeadPosition.getY() != tailPosition.getY()) {
+                        possiblePoints.add(new Point(tailPosition.getX() + 1, tailPosition.getY() + 1));
+                        possiblePoints.add(new Point(tailPosition.getX() + 1, tailPosition.getY() - 1));
+                        possiblePoints.add(new Point(tailPosition.getX() - 1, tailPosition.getY() + 1));
+                        possiblePoints.add(new Point(tailPosition.getX() - 1, tailPosition.getY() - 1));
+                    } else {
+                        possiblePoints.add(new Point(tailPosition.getX() + 1, tailPosition.getY()));
+                        possiblePoints.add(new Point(tailPosition.getX() - 1, tailPosition.getY()));
+                        possiblePoints.add(new Point(tailPosition.getX(), tailPosition.getY() + 1));
+                        possiblePoints.add(new Point(tailPosition.getX(), tailPosition.getY() - 1));
+                    }
+
+                    for (Point point : possiblePoints) {
+                        if (preHead.isNeighbor(new Rope(point))) {
+                            tail.move(point);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return ropes.get(9).getUniqPositionCount();
     }
 
     private List<Instruction> parseInstructions(List<String> input) {
         return input.stream().map(Instruction::new).collect(Collectors.toList());
-    }
-
-    private Pair<Integer, Integer> calcTailPosition(Rope head, Rope tail) {
-        Pair<Integer, Integer> headPosition = head.getCurrentPosition();
-        Pair<Integer, Integer> tailPosition = tail.getCurrentPosition();
-
-        if (isNeighbor(headPosition, tailPosition)) {
-            return tailPosition;
-        }
-        return head.getPrevPosition();
-    }
-
-    private boolean isNeighbor(Pair<Integer, Integer> headPosition, Pair<Integer, Integer> tailPosition) {
-        return Math.abs(headPosition.getLeft() - tailPosition.getLeft()) <= 1 && Math.abs(headPosition.getRight() - tailPosition.getRight()) <= 1;
     }
 
 }

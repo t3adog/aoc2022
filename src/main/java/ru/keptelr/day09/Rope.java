@@ -1,16 +1,60 @@
 package ru.keptelr.day09;
 
-import org.apache.commons.lang3.tuple.Pair;
+import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-public interface Rope {
+@Data
+public class Rope {
 
-    Pair<Integer, Integer> getCurrentPosition();
+    private Point currentPosition;
+    private final List<Point> positionsHistory;
 
-    Pair<Integer, Integer> getPrevPosition();
+    public Rope(Point point) {
+        this.currentPosition = point;
+        positionsHistory = new ArrayList<>();
+    }
 
-    void move(Pair<Integer, Integer> newPosition);
+    public Point getPrevPosition() {
+        return positionsHistory.get(positionsHistory.size() - 1);
+    }
 
-    List<Pair<Integer, Integer>> getPositionsHistory();
+    public void move(Point newPosition) {
+        positionsHistory.add(currentPosition);
+        this.currentPosition = newPosition;
+    }
+
+    public void handleInstruction(Direction direction, int step) {
+        switch (direction) {
+            case up: {
+                this.move(new Point(this.getCurrentPosition().getX(), this.getCurrentPosition().getY() + step));
+                break;
+            }
+            case down: {
+                this.move(new Point(this.getCurrentPosition().getX(), this.getCurrentPosition().getY() - step));
+                break;
+            }
+            case left: {
+                this.move(new Point(this.getCurrentPosition().getX() - step, this.getCurrentPosition().getY()));
+                break;
+            }
+            case right: {
+                this.move(new Point(this.getCurrentPosition().getX() + step, this.getCurrentPosition().getY()));
+                break;
+            }
+        }
+    }
+
+    public int getUniqPositionCount() {
+        this.positionsHistory.add(this.getCurrentPosition());
+        return new HashSet<>(this.positionsHistory).size();
+
+    }
+
+    public boolean isNeighbor(Rope rope) {
+        return Math.abs(this.currentPosition.getX() - rope.getCurrentPosition().getX()) <= 1
+                && Math.abs(this.currentPosition.getY() - rope.currentPosition.getY()) <= 1;
+    }
 }
