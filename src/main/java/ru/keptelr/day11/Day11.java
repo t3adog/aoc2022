@@ -24,7 +24,7 @@ public class Day11 {
 
     public BigInteger partOne(List<String> input) {
         List<Monkey> monkeyList = parseMonkeys(input);
-        playTheGame(monkeyList, 20, BigInteger.valueOf(3));
+        playTheGame(monkeyList, 20, 3L);
         List<Long> sortedMonkeyInspectedCountList = monkeyList.stream().map(monkey -> monkey.getInspectCount()).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
         return BigInteger.valueOf(sortedMonkeyInspectedCountList.get(0)).multiply(BigInteger.valueOf(sortedMonkeyInspectedCountList.get(1)));
     }
@@ -37,29 +37,32 @@ public class Day11 {
         return BigInteger.valueOf(sortedMonkeyInspectedCountList.get(0)).multiply(BigInteger.valueOf(sortedMonkeyInspectedCountList.get(1)));
     }
 
-    private void playTheGame(List<Monkey> monkeys, int rounds, BigInteger decraseWorriedLevel) {
+    private void playTheGame(List<Monkey> monkeys, int rounds, Long decraseWorriedLevel) {
+        // stole it on reddit for part 2
+        int superModulo = monkeys.stream().mapToInt(Monkey::getDivisibleValue).reduce(1, (a, b) -> {
+            return a * b;
+        });
         for (int round = 0; round < rounds; round++) {
-            System.out.println(round);
             for (Monkey monkey : monkeys) {
+                monkey.reduceItems(superModulo);
                 for (int i = 0; i < monkey.getItems().size(); i++) {
-                    BigInteger item = monkey.getItems().get(i);
-                    BigInteger incrementValue = monkey.getIncrementValue() == null ? item : monkey.getIncrementValue();
+                    Long item = monkey.getItems().get(i);
+                    Long incrementValue = monkey.getIncrementValue() == null ? item : monkey.getIncrementValue();
                     switch (monkey.getIncrementOperation()) {
                         case sum: {
-                            item = item.add(incrementValue);
+                            item = item + incrementValue;
                             break;
                         }
                         case milti: {
-                            item = item.multiply(incrementValue);
+                            item = item * incrementValue;
                             break;
                         }
                     }
                     if (decraseWorriedLevel != null) {
-                        item = item.divide(decraseWorriedLevel);
+                        item = item / decraseWorriedLevel;
                     }
 
-
-                    if (item.remainder(monkey.getDivisibleValue()).equals(BigInteger.ZERO)) {
+                    if (item % monkey.getDivisibleValue() == 0) {
                         monkeys.get(monkey.getMonkeyTrueIndex()).getItems().add(item);
                     } else {
                         monkeys.get(monkey.getMonkeyFalseIndex()).getItems().add(item);
@@ -68,10 +71,6 @@ public class Day11 {
                 }
                 monkey.getItems().clear();
             }
-        }
-        System.out.println("~~~~~~~~~~");
-        for (Monkey monkey : monkeys) {
-            System.out.println(monkey.getInspectCount());
         }
     }
 
