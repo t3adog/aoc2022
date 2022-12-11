@@ -2,9 +2,9 @@ package ru.keptelr.day11;
 
 import org.apache.commons.lang3.Range;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,44 +22,57 @@ public class Day11 {
         return monkeyList;
     }
 
-    public Integer partOne(List<String> input) {
+    public BigInteger partOne(List<String> input) {
         List<Monkey> monkeyList = parseMonkeys(input);
-        for (int round = 0; round < 20; round++) {
-            List<Integer> items = new ArrayList<>();
-            for (Monkey monkey : monkeyList) {
-                for (int i = 0; i < monkey.getItems().size(); i++) {
-                    Integer item = monkey.getItems().get(i);
-                    int incrementValue = monkey.getIncrementValue() == null ? item : monkey.getIncrementValue();
-                    switch (monkey.getIncrementOperation()) {
-                        case sum: {
-
-                            item = item + incrementValue;
-                            break;
-                        }
-                        case milti: {
-                            item = item * incrementValue;
-                            break;
-                        }
-                    }
-                    item = item / 3;
-
-                    if (item % monkey.getDivisibleValue().doubleValue() == 0) {
-                        monkeyList.get(monkey.getMonkeyTrueIndex()).getItems().add(item);
-                    } else {
-                        monkeyList.get(monkey.getMonkeyFalseIndex()).getItems().add(item);
-                    }
-                    monkey.setInspectCount(monkey.getInspectCount() + 1);
-                }
-                monkey.setItems(new LinkedList<>());
-            }
-        }
-        List<Integer> sortedMonkeyInspectedCountList = monkeyList.stream().map(monkey -> monkey.getInspectCount()).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-        return sortedMonkeyInspectedCountList.get(0) * sortedMonkeyInspectedCountList.get(1);
+        playTheGame(monkeyList, 20, BigInteger.valueOf(3));
+        List<Long> sortedMonkeyInspectedCountList = monkeyList.stream().map(monkey -> monkey.getInspectCount()).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        return BigInteger.valueOf(sortedMonkeyInspectedCountList.get(0)).multiply(BigInteger.valueOf(sortedMonkeyInspectedCountList.get(1)));
     }
 
 
-    public int partTwo(List<String> input) {
-        return 0;
+    public BigInteger partTwo(List<String> input) {
+        List<Monkey> monkeyList = parseMonkeys(input);
+        playTheGame(monkeyList, 10000, null);
+        List<Long> sortedMonkeyInspectedCountList = monkeyList.stream().map(monkey -> monkey.getInspectCount()).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        return BigInteger.valueOf(sortedMonkeyInspectedCountList.get(0)).multiply(BigInteger.valueOf(sortedMonkeyInspectedCountList.get(1)));
+    }
+
+    private void playTheGame(List<Monkey> monkeys, int rounds, BigInteger decraseWorriedLevel) {
+        for (int round = 0; round < rounds; round++) {
+            System.out.println(round);
+            for (Monkey monkey : monkeys) {
+                for (int i = 0; i < monkey.getItems().size(); i++) {
+                    BigInteger item = monkey.getItems().get(i);
+                    BigInteger incrementValue = monkey.getIncrementValue() == null ? item : monkey.getIncrementValue();
+                    switch (monkey.getIncrementOperation()) {
+                        case sum: {
+                            item = item.add(incrementValue);
+                            break;
+                        }
+                        case milti: {
+                            item = item.multiply(incrementValue);
+                            break;
+                        }
+                    }
+                    if (decraseWorriedLevel != null) {
+                        item = item.divide(decraseWorriedLevel);
+                    }
+
+
+                    if (item.remainder(monkey.getDivisibleValue()).equals(BigInteger.ZERO)) {
+                        monkeys.get(monkey.getMonkeyTrueIndex()).getItems().add(item);
+                    } else {
+                        monkeys.get(monkey.getMonkeyFalseIndex()).getItems().add(item);
+                    }
+                    monkey.setInspectCount(monkey.getInspectCount() + 1);
+                }
+                monkey.getItems().clear();
+            }
+        }
+        System.out.println("~~~~~~~~~~");
+        for (Monkey monkey : monkeys) {
+            System.out.println(monkey.getInspectCount());
+        }
     }
 
     private void validateMonkeyList(List<Monkey> monkeyList) {
