@@ -14,6 +14,6 @@ public class Day10Test extends TestCase {
 
     public void testPartTwo() {
         Day10 day10 = new Day10();
-        Assert.assertEquals( 0, day10.partTwo(InputParserUtil.readFile("day10")), 0);
+        day10.partTwo(InputParserUtil.readFile("day10"));
     }
 }

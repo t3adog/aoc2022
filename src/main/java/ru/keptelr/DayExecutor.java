@@ -53,7 +53,8 @@ public class DayExecutor {
 
         Day10 day10 = new Day10();
         System.out.println("Day10 Part01: " + day10.partOne(InputParserUtil.readFile("day10")));
-        System.out.println("Day10 Part02: " + day10.partTwo(InputParserUtil.readFile("day10")));
+        System.out.println("Day10 Part02: ");
+        day10.partTwo(InputParserUtil.readFile("day10"));
     }
 
 }
