@@ -8,7 +8,12 @@ public class Day12Test extends TestCase {
     private Day12 day12 = new Day12();
 
     public void testPartOne() {
-        assertEquals(0, day12.partOne(InputParserUtil.readFile("day12")), 0);
+        char a = 'a';
+        char b = 'b';
+        System.out.println(a > b);
+        System.out.println(a < b);
+        System.out.println(b == b);
+        assertEquals(31, day12.partOne(InputParserUtil.readFile("day12")), 0);
     }
 
     public void testPartTwo() {
