@@ -1,42 +1,29 @@
 package ru.keptelr.day12;
 
-import java.util.Arrays;
-import java.util.List;
+import org.apache.commons.lang3.Range;
+
+import java.sql.SQLOutput;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Day12 {
 
-    List<String> findPaths(char[][] map, int[] from, int[] to, List<String> foundPaths) {
-
-
-        // TODO Написать тут рекурсивный метод, который будет возвращать все возможные следующие шаги, после чего
-        // каждый из них в цикле проверять и так далее, пока не достигнем тупика либо финиша
-        String path = "";
-        int[] currentPoint = from;
-        while (!Arrays.equals(currentPoint, to)) {
-
-        }
-
-        return foundPaths;
-    }
-
-    void findNextSteps(int[][]map, List<int[]> paths) {
-        int y = currentPath[0];
-        int x = currentPath[1];
-        // up
-
-        // down
-
-        // left
-
-        // right
-    }
+    private char[][] MAP;
+    private static final Set<Point> UNXEPLORED = new HashSet<>();
+    private static Point FINISH_POINT;
+    private static Point START_POINT;
 
     public Integer partOne(List<String> input) {
-        char[][] map = parseMap(input);
-        int[] from = findPosition(map, 'S');
-        int[] to = findPosition(map, 'E');
+        MAP = parseMap(input);
 
-        return 0;
+        FINISH_POINT = findPosition(MAP, 'E');
+        START_POINT = findPosition(MAP, 'S');
+
+        MAP[START_POINT.getY()][START_POINT.getX()] = 'a';
+        MAP[FINISH_POINT.getY()][FINISH_POINT.getX()] = 'z';
+
+
+        return findPaths(List.of(List.of(START_POINT))).stream().mapToInt(l -> l.size()).min().orElse(0) - 1;
     }
 
 
@@ -44,12 +31,55 @@ public class Day12 {
         return 0;
     }
 
-    private int[] findPosition(char[][] map, char position) {
+    private List<List<Point>> findPaths(List<List<Point>> foundPaths) {
+
+        List<List<Point>> newList = new ArrayList<>();
+
+        for (List<Point> path : foundPaths) {
+            Point lastPoint = path.get(path.size() - 1);
+            if (FINISH_POINT.equals(lastPoint)) {
+                return List.of(path);
+            } else {
+                for (Point point : findNextSteps(lastPoint, path)) {
+                    List<Point> newPath = new ArrayList<>();
+                    newPath.addAll(path);
+                    newPath.add(point);
+                    newList.add(newPath);
+                }
+            }
+        }
+        return findPaths(newList);
+    }
+
+    private List<Point> findNextSteps(Point currentPoint, List<Point> currentPath) {
+        int x = currentPoint.getX();
+        int y = currentPoint.getY();
+        List<Point> foundPoints = new ArrayList<>();
+        List<Point> pointsForCheck = List.of(
+                new Point(x, y - 1), // up
+                new Point(x, y + 1), // down
+                new Point(x - 1, y), // left
+                new Point(x + 1, y)  // right
+        );
+
+        for (Point newPoint : pointsForCheck) {
+            if (Range.between(0, MAP.length - 1).contains(newPoint.getY())
+                    && Range.between(0, MAP[0].length - 1).contains(newPoint.getX())) {
+                if (UNXEPLORED.contains(newPoint) && !currentPath.contains(newPoint) && canGoHere(currentPoint, newPoint)) {
+                    UNXEPLORED.remove(newPoint);
+                    foundPoints.add(newPoint);
+                }
+            }
+        }
+        return foundPoints;
+    }
+
+    private Point findPosition(char[][] map, char position) {
         for (int y = 0; y < map.length; y++) {
             char[] line = map[y];
             for (int x = 0; x < line.length; x++) {
                 if (map[y][x] == position) {
-                    return new int[]{y, x};
+                    return new Point(x, y);
                 }
             }
         }
@@ -62,8 +92,17 @@ public class Day12 {
             char[] line = input.get(y).toCharArray();
             for (int x = 0; x < line.length; x++) {
                 map[y][x] = line[x];
+                UNXEPLORED.add(new Point(x, y));
             }
         }
         return map;
+    }
+
+    private boolean canGoHere(Point from, Point to) {
+        return getCharAlphabetPosition(MAP[from.getY()][from.getX()]) + 1 >= getCharAlphabetPosition(MAP[to.getY()][to.getX()]);
+    }
+
+    private int getCharAlphabetPosition(char input) {
+        return (String.valueOf(input).codePointAt(0)) - 'a' + 1;
     }
 }
