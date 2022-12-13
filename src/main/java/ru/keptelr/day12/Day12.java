@@ -6,8 +6,6 @@ import java.text.ParsePosition;
 import java.util.*;
 
 public class Day12 {
-
-    private static final int MAX_PATS_FROM_PART_ONE = 331;
     private char[][] MAP;
     private static final Set<Point> UNXEPLORED = new HashSet<>();
     private static Point FINISH_POINT;
