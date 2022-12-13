@@ -1,6 +1,5 @@
 package ru.keptelr.day12;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class Day12 {
         return foundPaths;
     }
 
-    int[] findNextStep(int[][]map, int[] currentPath) {
+    void findNextSteps(int[][]map, List<int[]> paths) {
         int y = currentPath[0];
         int x = currentPath[1];
         // up
