@@ -47,8 +47,13 @@ public class Day13 {
     public boolean isValidPkg(Pair<List<Object>, List<Object>> pkg) {
         var left = pkg.getLeft();
         var right = pkg.getRight();
+        if (right.size() == 0 && left.size() != 0) {
+            return false;
+        }
+        System.out.println("Left " + left);
+        System.out.println("Right " + right);
         try {
-            for (int i = 0; i < left.size(); i++) {
+            for (int i = 0; i < right.size(); i++) {
                 var leftValue = left.get(i);
                 var rightValue = right.get(i);
 
@@ -58,14 +63,13 @@ public class Day13 {
                     if (rightDouble < leftDouble) {
                         return false;
                     }
-                    if (left.size() != right.size() && right.size() < (i + 2)) {
-                        if (rightDouble.equals(leftDouble)) {
-                            return false;
-                        }
+                    if (left.size() > right.size() && right.size() < i + 2) {
                         if (rightDouble > leftDouble) {
-                            return true;
+                            return  true;
                         }
+                        return false;
                     }
+
                 } else if (leftValue instanceof ArrayList && rightValue instanceof ArrayList) {
                     var leftList = (ArrayList) leftValue;
                     var rightList = (ArrayList) rightValue;
@@ -90,7 +94,7 @@ public class Day13 {
                 }
             }
         } catch (IndexOutOfBoundsException ex) {
-            return false;
+            return true;
             //return isValidPkg(Pair.of(List.of(left.get(left.size() -1)), List.of(right.get(right.size() - 1))));
         }
 
