@@ -1,89 +1,100 @@
 package ru.keptelr.day13;
 
+import com.google.gson.Gson;
 import org.apache.commons.lang3.tuple.Pair;
 
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class Day13 {
 
-    public boolean isValidPackage(Pair<List<Integer>, List<Integer>> pkg) {
-        List<Integer> left = pkg.getLeft();
-        List<Integer> right = pkg.getRight();
+    public List<Pair<List<Object>, List<Object>>> parsePackages(List<String> input) {
+        Gson parser = new Gson();
+        var result = new ArrayList<Pair<List<Object>, List<Object>>>();
 
-        for (int i = 0; i < left.size(); i++) {
-            try {
-                if (left.get(i) > right.get(i)) {
-                    return false;
-                }
-                if (left.get(i) < right.get(i)) {
-                    return true;
-                }
-            } catch (Exception ex) {
-                if (left.size() > right.size()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private List<Pair<Package, Package>> parsePackages(List<String> input) {
-        List<Pair<Package, Package>> packages = new ArrayList<>();
         for (int i = 0; i < input.size(); i = i + 3) {
             if (input.get(i).startsWith("[") && input.get(i + 1).startsWith("[")) {
-                String leftPackageStr = input.get(i).substring(1, input.get(i).length() - 1);
-                String rightPackageStr = input.get(i+1).substring(1, input.get(i+1).length() - 1);
-                packages.add(Pair.of(Package.from(leftPackageStr), Package.from(rightPackageStr)));
+                result.add(
+                        Pair.of(
+                                parser.fromJson(input.get(i), List.class),
+                                parser.fromJson(input.get(i + 1), List.class)
+                        )
+                );
             } else {
                 throw new RuntimeException("");
             }
-        }
-        return packages;
-    }
-
-    private List<Pair<List<Integer>, List<Integer>>> parse(List<String> input) {
-        List<Pair<List<Integer>, List<Integer>>> packages = new ArrayList<>();
-        for (int i = 0; i < input.size(); i = i + 3) {
-            if (input.get(i).startsWith("[") && input.get(i + 1).startsWith("[")) {
-               packages.add(
-                       Pair.of(
-                              parseNumbers(input.get(i)),
-                              parseNumbers(input.get(i+1))
-                       )
-               );
-            } else {
-                throw new RuntimeException("");
-            }
-        }
-        return packages;
-    }
-
-    private List<Integer> parseNumbers(String input) {
-        input = input.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(",", "");
-
-        List<Integer> result = new ArrayList<>();
-        for (String sym : input.strip().split("")) {
-            if (sym.equals("")) {
-                continue;
-            }
-            result.add(Integer.parseInt(sym.strip()));
         }
         return result;
     }
 
     public Integer partOne(List<String> input) {
-        List<Pair<List<Integer>, List<Integer>>> parsePackages = parse(input);
+        var packages = parsePackages(input);
 
-        int validCount = 0;
-        for ( Pair<List<Integer>, List<Integer>> pair : parsePackages) {
-           if (isValidPackage(pair)) {
-               validCount++;
-           }
+        List<Integer> validIndicies = new ArrayList<>();
+        for (int i = 0; i < packages.size(); i++) {
+            var pkg = packages.get(i);
+            if (isValidPkg(pkg)) {
+                validIndicies.add(i + 1);
+            }
+
         }
-        return validCount;
+        //System.out.println(validIndicies); // 6235
+        return validIndicies.stream().mapToInt(Integer::intValue).sum();
+    }
+
+    public boolean isValidPkg(Pair<List<Object>, List<Object>> pkg) {
+        var left = pkg.getLeft();
+        var right = pkg.getRight();
+        try {
+            for (int i = 0; i < left.size(); i++) {
+                var leftValue = left.get(i);
+                var rightValue = right.get(i);
+
+                if (leftValue instanceof Double && rightValue instanceof Double) {
+                    Double leftDouble = (Double) leftValue;
+                    Double rightDouble = (Double) rightValue;
+                    if (rightDouble < leftDouble) {
+                        return false;
+                    }
+                    if (left.size() != right.size() && right.size() < (i + 2)) {
+                        if (rightDouble.equals(leftDouble)) {
+                            return false;
+                        }
+                        if (rightDouble > leftDouble) {
+                            return true;
+                        }
+                    }
+                } else if (leftValue instanceof ArrayList && rightValue instanceof ArrayList) {
+                    var leftList = (ArrayList) leftValue;
+                    var rightList = (ArrayList) rightValue;
+                    var res = isValidPkg(Pair.of(leftList, rightList));
+                    if (!res) {
+                        return res;
+                    }
+                } else if (leftValue instanceof ArrayList && rightValue instanceof Double) {
+                    var leftList = (ArrayList) leftValue;
+                    var rightList = List.of(rightValue);
+                    var res = isValidPkg(Pair.of(leftList, rightList));
+                    if (!res) {
+                        return res;
+                    }
+                } else if (leftValue instanceof Double && rightValue instanceof ArrayList) {
+                    var leftList = List.of(leftValue);
+                    var rightList = (ArrayList) rightValue;
+                    var res = isValidPkg(Pair.of(leftList, rightList));
+                    if (!res) {
+                        return res;
+                    }
+                }
+            }
+        } catch (IndexOutOfBoundsException ex) {
+            return false;
+            //return isValidPkg(Pair.of(List.of(left.get(left.size() -1)), List.of(right.get(right.size() - 1))));
+        }
+
+        return true;
     }
 
     public Integer partTwo(List<String> input) {
